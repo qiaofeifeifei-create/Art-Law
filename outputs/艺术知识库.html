@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>艺术拍卖与咨询知识体系</title>
+<style>
+  :root {
+    --bg: #f8f7f4;
+    --sidebar: #1a1a2e;
+    --sidebar-text: #c4c4d4;
+    --sidebar-active: #e8b84b;
+    --card: #fff;
+    --text: #2c2c2c;
+    --text-light: #666;
+    --accent: #b8860b;
+    --accent-light: #f0d080;
+    --border: #e8e4de;
+    --tag-bg: #f0ece6;
+    --tag-text: #6b5c4a;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.8;
+    display: flex; min-height: 100vh;
+  }
+  /* Sidebar */
+  .sidebar {
+    width: 300px; background: var(--sidebar); color: var(--sidebar-text);
+    padding: 32px 0; position: fixed; height: 100vh; overflow-y: auto;
+    z-index: 10;
+  }
+  .sidebar h1 {
+    font-size: 18px; color: #fff; padding: 0 24px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    line-height: 1.4; font-weight: 600;
+  }
+  .sidebar h1 small { display: block; font-size: 13px; font-weight: 400; color: var(--sidebar-text); margin-top: 4px; }
+  .sidebar-nav { padding: 16px 0; }
+  .sidebar-nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 24px; color: var(--sidebar-text);
+    text-decoration: none; font-size: 14px; transition: .2s;
+    border-left: 3px solid transparent;
+  }
+  .sidebar-nav a:hover { background: rgba(255,255,255,0.05); color: #fff; }
+  .sidebar-nav a.active { background: rgba(232,184,75,0.1); color: var(--sidebar-active); border-left-color: var(--sidebar-active); }
+  .sidebar-nav a .icon { width: 22px; text-align: center; font-size: 16px; }
+  .sidebar-nav a .badge {
+    margin-left: auto; background: rgba(255,255,255,0.1);
+    padding: 1px 8px; border-radius: 10px; font-size: 11px; color: #999;
+  }
+  .sidebar-nav a.active .badge { background: rgba(232,184,75,0.2); color: var(--sidebar-active); }
+  .sidebar .meta { padding: 24px 24px 0; font-size: 12px; color: #666; }
+  .sidebar .meta a { color: var(--accent-light); text-decoration: none; }
+
+  /* Main */
+  .main { margin-left: 300px; flex: 1; padding: 48px 56px; max-width: 1000px; }
+
+  /* Sections */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Hero */
+  .hero { margin-bottom: 40px; }
+  .hero h2 { font-size: 32px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 16px; color: var(--text-light); }
+  .hero .stats { display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap; }
+  .hero .stat-card {
+    background: var(--card); border-radius: var(--radius); padding: 16px 24px;
+    box-shadow: var(--shadow); flex: 1; min-width: 120px; text-align: center;
+  }
+  .hero .stat-card .num { font-size: 28px; font-weight: 700; color: var(--accent); }
+  .hero .stat-card .label { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+
+  /* Entry */
+  .module-label {
+    display: inline-block; background: var(--sidebar); color: #fff;
+    padding: 2px 12px; border-radius: 4px; font-size: 12px; margin-bottom: 12px;
+  }
+  .entry {
+    background: var(--card); border-radius: var(--radius); padding: 28px 32px;
+    margin-bottom: 20px; box-shadow: var(--shadow);
+    border-left: 3px solid var(--accent);
+  }
+  .entry h4 { font-size: 18px; margin-bottom: 8px; color: #1a1a2e; }
+  .entry .meta-line { font-size: 13px; color: var(--text-light); margin-bottom: 12px; }
+  .entry .meta-line code { background: var(--tag-bg); padding: 1px 8px; border-radius: 3px; font-size: 12px; }
+  .entry .meta-line .tag {
+    display: inline-block; background: var(--tag-bg); color: var(--tag-text);
+    padding: 1px 8px; border-radius: 3px; font-size: 12px; margin: 0 2px;
+  }
+  .entry p { margin: 8px 0; font-size: 15px; color: #444; }
+  .entry ul, .entry ol { margin: 8px 0; padding-left: 20px; font-size: 15px; color: #444; }
+  .entry li { margin: 4px 0; }
+  .entry table {
+    width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px;
+  }
+  .entry th, .entry td {
+    border: 1px solid var(--border); padding: 8px 12px; text-align: left;
+  }
+  .entry th { background: #f8f6f2; font-weight: 600; color: #333; }
+  .entry strong { color: #1a1a2e; }
+  .entry .img-placeholder {
+    background: #f5f2ed; border: 1px dashed #d0c8bc; border-radius: 6px;
+    padding: 16px; margin: 12px 0; font-size: 13px; color: #8a7a6a;
+    text-align: center;
+  }
+  .entry .img-placeholder::before { content: "🖼 "; }
+  .entry .ref {
+    border-top: 1px solid var(--border); margin-top: 12px; padding-top: 8px;
+    font-size: 13px; color: var(--accent);
+  }
+  .entry .sub-head { font-size: 15px; font-weight: 600; color: var(--accent); margin: 16px 0 8px; }
+
+  .section-title {
+    font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-light); margin: 32px 0 12px; font-weight: 600;
+  }
+
+  /* Image note */
+  .image-note {
+    background: #fdf8ee; border: 1px solid #f0d080; border-radius: 8px;
+    padding: 16px 20px; margin: 20px 0; font-size: 14px;
+  }
+  .image-note strong { color: var(--accent); }
+
+  /* Footer */
+  .footer {
+    margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--text-light); text-align: center;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar { position: relative; width: 100%; height: auto; }
+    .main { margin-left: 0; padding: 24px 16px; }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --card: #252525;
+      --text: #e0e0e0;
+      --text-light: #999;
+      --border: #333;
+      --tag-bg: #333;
+      --tag-text: #bbb;
+      --shadow: 0 2px 12px rgba(0,0,0,0.3);
+      --sidebar: #0f0f1a;
+    }
+    .hero h2 { color: #e0d8c8; }
+    .entry strong { color: #e0d8c8; }
+    .entry th { background: #2a2a2a; color: #ccc; }
+    .entry .img-placeholder { background: #2a2a2a; border-color: #444; color: #777; }
+    .image-note { background: #2a2518; border-color: #665533; }
+    .entry { border-left-color: #b8860b; }
+    .stat-card .num { color: #e8b84b; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h1>艺术拍卖与咨询<br><small>知识体系 · 88 条目</small></h1>
+  <div class="sidebar-nav">
+    <a href="#" class="active" onclick="showSection('intro')">
+      <span class="icon">🏠</span> 系统总览 <span class="badge">主页</span>
+    </a>
+    <a href="#" onclick="showSection('area1')">
+      <span class="icon">🏛</span> 艺术市场概论 <span class="badge">10</span>
+    </a>
+    <a href="#" onclick="showSection('area2')">
+      <span class="icon">🔨</span> 拍卖行业实务 <span class="badge">12</span>
+    </a>
+    <a href="#" onclick="showSection('area3')">
+      <span class="icon">🎨</span> 艺术品品类知识 <span class="badge">25</span>
+    </a>
+    <a href="#" onclick="showSection('area4')">
+      <span class="icon">🔍</span> 鉴定估价与来源 <span class="badge">12</span>
+    </a>
+    <a href="#" onclick="showSection('area5')">
+      <span class="icon">⚖️</span> 法律法规与合规 <span class="badge">12</span>
+    </a>
+    <a href="#" onclick="showSection('area6')">
+      <span class="icon">💎</span> 艺术商业与金融 <span class="badge">9</span>
+    </a>
+    <a href="#" onclick="showSection('area7')">
+      <span class="icon">📊</span> 市场数据与趋势 <span class="badge">8</span>
+    </a>
+  </div>
+  <div class="meta">
+    <div>📅 2026-06-01 · v1.0</div>
+    <div style="margin-top:8px">
+      <a href="https://github.com/qiaofeifeifei-create/Art-Law" target="_blank">GitHub</a>
+      &nbsp;·&nbsp;
+      <a href="https://gitee.com/kawk97/kawk-personal-knowledge" target="_blank">Gitee</a>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+
+<!-- ============================================================ -->
+<section id="sec-intro" class="section active">
+  <div class="hero">
+    <h2>艺术拍卖与咨询知识体系</h2>
+    <div class="subtitle">搭建原则完全参照电气知识库的系统架构和方法论（PARA体系）</div>
+    <div class="stats">
+      <div class="stat-card"><div class="num">88</div><div class="label">知识条目</div></div>
+      <div class="stat-card"><div class="num">7</div><div class="label">领域分类</div></div>
+      <div class="stat-card"><div class="num">2</div><div class="label">概念卡片</div></div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:32px">📂 目录结构</h3>
+  <div class="entry">
+    <pre style="font-size:13px; line-height:1.6; color:var(--text-light);">
+personal-knowledge-base/
+├── 系统入口.md
+├── knowledge/
+│   ├── index.md                      ← 索引导航
+│   ├── areas/                        ← 领域知识（7个，88条）
+│   └── resources/concepts/           ← 概念卡片
+├── raw/                              ← 原始材料
+└── outputs/                          ← 输出产物</pre>
+  </div>
+
+  <h3>📋 七大领域一览</h3>
+
+  <div class="entry">
+    <h4>🏛 艺术市场概论（10条目）</h4>
+    <p>行业分类归属、一级与二级市场结构、画廊与艺博会模式、拍卖行商业模式、全球三大艺术中心、中国市场特征</p>
+  </div>
+  <div class="entry">
+    <h4>🔨 拍卖行业实务（12条目）</h4>
+    <p>拍卖全流程（征集→图录→预展→竞价→结算）、拍卖行组织架构、核心术语表（保留价/买家佣金/担保等）</p>
+  </div>
+  <div class="entry">
+    <h4>🎨 艺术品品类知识（25条目 🌟）</h4>
+    <p>七大品类深度覆盖：中国书画→现当代艺术→瓷器杂项→珠宝钟表→名酒→手袋潮玩→古籍善本。每品类含鉴定要点、价格金字塔、配图占位</p>
+  </div>
+  <div class="entry">
+    <h4>🔍 鉴定估价与来源（12条目）</h4>
+    <p>传统眼学+科技鉴定方法、估价方法论（市场比较法/成本法/收益法）、品相报告、Provenance来源调查、各品类鉴定对照表</p>
+  </div>
+  <div class="entry">
+    <h4>⚖️ 法律法规与合规（12条目）</h4>
+    <p>拍卖法第61条、文物保护法、艺术品经营管理办法、UNESCO/UNIDROIT国际公约、进出口实务、反洗钱合规</p>
+  </div>
+  <div class="entry">
+    <h4>💎 艺术商业与金融（9条目）</h4>
+    <p>艺术基金（British Rail Pension Fund经典案例）、艺术品质押融资、艺术品保险、捐赠抵税、艺术信托、自由港税务筹划</p>
+  </div>
+  <div class="entry">
+    <h4>📊 市场数据与趋势（8条目）</h4>
+    <p>全球市场规模与份额、梅摩指数、品类成交占比、新藏家画像（千禧一代占45%）、线上化趋势、ESG与女性艺术家崛起</p>
+  </div>
+
+  <div class="image-note">
+    <strong>🖼 图片策略</strong><br>
+    每个品类知识页均嵌入插图占位符，建议图片来源：故宫博物院（书画/瓷器公有领域）、纽约大都会博物馆（开放API）、拍卖行官网（参考图）、Wikipedia Commons（公共领域艺术品）
+  </div>
+
+  <h3>🔗 双平台同步</h3>
+  <div class="entry" style="border-left-color:#2ea043;">
+    <p><strong>GitHub</strong>：<a href="https://github.com/qiaofeifeifei-create/Art-Law" target="_blank">github.com/qiaofeifeifei-create/Art-Law</a></p>
+    <p><strong>Gitee</strong>：<a href="https://gitee.com/kawk97/kawk-personal-knowledge" target="_blank">gitee.com/kawk97/kawk-personal-knowledge</a></p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-area1" class="section">
+  <div class="hero">
+    <h2>🏛 艺术市场概论</h2>
+    <div class="subtitle">模块1 · 子模块：行业分类 · 市场结构 · 一级市场 · 二级市场 · 全球主要市场 · 中国艺术市场</div>
+    <div class="stats">
+      <div class="stat-card"><div class="num">10</div><div class="label">条目</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">1.1 行业分类</div>
+
+  <div class="entry">
+    <h4>行业大类归属</h4>
+    <div class="meta-line"><code>ID: 1001</code> <span class="tag">行业分类</span> <span class="tag">国民经济</span> <span class="tag">文化产业</span></div>
+    <p>拍卖与艺术咨询在国民经济行业分类（GB/T 4754）中主要属于 <strong>R — 文化、体育和娱乐业</strong> 门类下的 <strong>文化艺术业</strong>（大类87）。</p>
+    <table>
+      <tr><th>层级</th><th>代码</th><th>名称</th></tr>
+      <tr><td>门类</td><td>R</td><td>文化、体育和娱乐业</td></tr>
+      <tr><td>大类</td><td>87</td><td>文化艺术业</td></tr>
+      <tr><td>中类</td><td>874</td><td>文物及非物质文化遗产保护</td></tr>
+      <tr><td>中类</td><td>889</td><td>其他文化艺术业（艺术咨询/经纪）</td></tr>
+      <tr><td>跨类</td><td>F51</td><td>批发业（艺术品交易）</td></tr>
+    </table>
+    <p><strong>行业特征：</strong>高净值驱动、信息不对称显著、长周期+高单价、政策敏感</p>
+    <div class="ref">→ 关联：法律法规与合规</div>
+  </div>
+
+  <div class="entry">
+    <h4>艺术市场的双轨结构</h4>
+    <div class="meta-line"><code>ID: 1002</code> <span class="tag">一级市场</span> <span class="tag">二级市场</span></div>
+    <table>
+      <tr><th>维度</th><th>一级市场</th><th>二级市场</th></tr>
+      <tr><td>定义</td><td>艺术家作品的首次销售</td><td>艺术品的再次流通交易</td></tr>
+      <tr><td>参与者</td><td>画廊、艺博会、艺术家本人</td><td>拍卖行、二手经销商</td></tr>
+      <tr><td>定价逻辑</td><td>画廊定价</td><td>市场竞价</td></tr>
+      <tr><td>利润率</td><td>40%~60%</td><td>10%~20%</td></tr>
+    </table>
+    <p><strong>中国市场特殊性：</strong>一级市场发育不足，拍卖行占主导；"一二级市场倒挂"突出</p>
+  </div>
+
+  <div class="section-title">1.2 一级市场</div>
+
+  <div class="entry">
+    <h4>画廊商业模式</h4>
+    <div class="meta-line"><code>ID: 1003</code> <span class="tag">画廊</span> <span class="tag">代理</span></div>
+    <p>画廊是艺术家的"商业代理人"。收入模式分三种：<strong>代理销售</strong>（画廊50%/艺术家50%）、<strong>买断</strong>、<strong>保底+分成</strong>。</p>
+  </div>
+
+  <div class="entry">
+    <h4>艺博会</h4>
+    <div class="meta-line"><code>ID: 1004</code> <span class="tag">艺博会</span> <span class="tag">Art Basel</span> <span class="tag">Frieze</span></div>
+    <p>全球主要艺博会：<strong>Art Basel</strong>（巴塞尔/迈阿密/香港/巴黎）、<strong>Frieze</strong>（伦敦/纽约/洛杉矶/首尔）、<strong>TEFAF</strong>（马斯特里赫特/纽约）、<strong>西岸</strong>（上海）、<strong>ART021</strong>（上海）</p>
+    <p>一场艺博会4~5天的交易量可占画廊全年营收的<strong>30%~60%</strong></p>
+  </div>
+
+  <div class="entry">
+    <h4>艺术家代理与定价</h4>
+    <div class="meta-line"><code>ID: 1005</code> <span class="tag">定价</span> <span class="tag">艺术家</span></div>
+    <p>艺术家市场价格五阶段：萌芽期（¥1K~1万）→ 上升期（¥1万~5万）→ 成长期（¥5万~30万）→ 成熟期（¥30万~100万）→ 蓝筹期（¥100万+）</p>
+    <p>画廊控制年涨价幅度在<strong>15%~30%</strong></p>
+  </div>
+
+  <div class="section-title">1.3 二级市场</div>
+
+  <div class="entry">
+    <h4>拍卖行商业模式</h4>
+    <div class="meta-line"><code>ID: 1006</code> <span class="tag">拍卖行</span> <span class="tag">佣金</span></div>
+    <p><strong>全球三大拍卖行：</strong>佳士得（1766，伦敦，~$65亿）、苏富比（1744，纽约，~$60亿）、富艺斯（1796，伦敦/纽约，~$15亿）</p>
+    <p><strong>国内头部：</strong>中国嘉德（1993）、北京保利（2005）、永乐拍卖、西泠拍卖</p>
+    <p>买家佣金占拍卖行总收入<strong>60%~70%</strong>。佣金阶梯：≤50万港币 26% / 50万~1000万 20% / >1000万 14.5%</p>
+  </div>
+
+  <div class="entry">
+    <h4>拍卖会类型与私洽</h4>
+    <div class="meta-line"><code>ID: 1007-1008</code> <span class="tag">春秋拍</span> <span class="tag">私洽</span></div>
+    <p>春拍（3~5月）+ 秋拍（10~12月）+ 四季拍 + 网络拍卖 + 专场拍卖</p>
+    <p>私洽占佳士得/苏富比成交额的<strong>20%~30%</strong>，是增长最快的业务板块</p>
+  </div>
+
+  <div class="section-title">1.4 全球主要市场</div>
+
+  <div class="entry">
+    <h4>艺术市场三大中心</h4>
+    <div class="meta-line"><code>ID: 1009</code></div>
+    <table>
+      <tr><th>市场</th><th>全球份额</th><th>核心品类</th></tr>
+      <tr><td>纽约</td><td>~40%</td><td>现当代艺术、印象派</td></tr>
+      <tr><td>伦敦</td><td>~15%</td><td>古典绘画、当代艺术</td></tr>
+      <tr><td>香港</td><td>~20%</td><td>亚洲现当代、珠宝、名酒</td></tr>
+      <tr><td>北京/上海</td><td>~10%</td><td>中国书画、瓷器</td></tr>
+    </table>
+    <p>趋势：亚洲份额从15%升至~30%；线上交易从5%升至~25%</p>
+  </div>
+
+  <div class="entry">
+    <h4>中国艺术市场特征</h4>
+    <div class="meta-line"><code>ID: 1010</code> <span class="tag">中国市场</span></div>
+    <p>书画占拍卖总量<strong>50%~60%</strong>；藏家代际更替中；缺乏第三方权威鉴定体系；进口税/增值税负担较重</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-area2" class="section">
+  <div class="hero">
+    <h2>🔨 拍卖行业实务</h2>
+    <div class="subtitle">模块2 · 子模块：拍卖全流程 · 图录与预展 · 竞价方式 · 结算 · 术语 · 组织架构</div>
+    <div class="stats">
+      <div class="stat-card"><div class="num">12</div><div class="label">条目</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">2.1 拍卖全流程</div>
+
+  <div class="entry">
+    <h4>征集 → 图录 → 预展 → 竞价 → 结算</h4>
+    <div class="meta-line"><code>ID: 2001-2003</code></div>
+    <ol>
+      <li><strong>征集</strong>：藏家委托（40%）+ 专家开发（30%）+ 品牌吸引（15%）+ 第三方推荐（10%）+ 线上（5%）</li>
+      <li><strong>图录</strong>：拍品编号/图片/估价/来源/著录/品相报告，印刷+在线</li>
+      <li><strong>预展</strong>：拍卖前3~7天，买家实物查验</li>
+      <li><strong>竞价</strong>：现场/电话/书面/线上/缺席五种方式</li>
+      <li><strong>结算</strong>：买家付款后30~45天向卖家付款</li>
+    </ol>
+  </div>
+
+  <div class="section-title">2.2 结算与费用</div>
+
+  <div class="entry">
+    <h4>买家费用与卖家结算</h4>
+    <div class="meta-line"><code>ID: 2004-2005</code></div>
+    <p><strong>买家总支付 = 落槌价 + 买家佣金（15%~28%）+ 税费 + 运输/保险</strong></p>
+    <p><strong>卖家净得 = 落槌价 - 卖家佣金（2%~15%）- 保险费 - 图录费</strong></p>
+  </div>
+
+  <div class="section-title">2.3 术语表</div>
+
+  <div class="entry">
+    <h4>核心术语</h4>
+    <div class="meta-line"><code>ID: 2010-2012</code></div>
+    <table>
+      <tr><th>术语</th><th>英文</th><th>定义</th></tr>
+      <tr><td>落槌价</td><td>Hammer Price</td><td>拍卖师落槌时的最终出价</td></tr>
+      <tr><td>保留价</td><td>Reserve Price</td><td>卖家同意出售的最低价格</td></tr>
+      <tr><td>买家佣金</td><td>Buyer's Premium</td><td>买家额外支付给拍卖行的费用</td></tr>
+      <tr><td>流拍</td><td>Buy-in</td><td>未达保留价未能成交</td></tr>
+      <tr><td>护封/担保</td><td>Guarantee</td><td>保底成交承诺</td></tr>
+      <tr><td>品相报告</td><td>Condition Report</td><td>瑕疵描述文件</td></tr>
+      <tr><td>来源</td><td>Provenance</td><td>流传历史记录</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">2.4 拍卖行组织</div>
+
+  <div class="entry">
+    <h4>核心部门与拍卖师</h4>
+    <div class="meta-line"><code>ID: 2020-2021</code></div>
+    <p>七大部门：专家部、业务拓展、拍卖运营、市场营销、法务/合规、财务/结算、物流/仓储</p>
+    <p>拍卖师需通过中国拍卖行业协会资格考试获得<strong>《拍卖师执业资格证书》</strong></p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-area3" class="section">
+  <div class="hero">
+    <h2>🎨 艺术品品类知识</h2>
+    <div class="subtitle">模块3 · 子模块：中国书画 · 现当代艺术 · 瓷器杂项 · 珠宝钟表 · 名酒 · 手袋潮玩 · 古籍善本</div>
+    <div class="stats">
+      <div class="stat-card"><div class="num">25</div><div class="label">条目</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">3.1 中国书画（5条）</div>
+
+  <div class="entry">
+    <h4>品类概述</h4>
+    <div class="meta-line"><code>ID: 3001</code> <span class="tag">书画</span> <span class="tag">山水</span> <span class="tag">花鸟</span></div>
+    <p>中国书画占国内拍卖市场成交额的<strong>50%~60%</strong>，是中国市场绝对主力。</p>
+    <div class="img-placeholder">五代·董源《潇湘图》卷（局部）— 故宫博物院藏</div>
+    <p>分类：山水/花鸟/人物（题材）；工笔/写意/没骨（技法）；立轴/手卷/册页/扇面（装裱）；古代/近现代/当代（时代）</p>
+  </div>
+
+  <div class="entry">
+    <h4>古代书画</h4>
+    <div class="meta-line"><code>ID: 3002</code> <span class="tag">宋元</span> <span class="tag">明清</span></div>
+    <div class="img-placeholder">宋·赵孟頫《鹊华秋色图》— 台北故宫博物院藏</div>
+    <p>宋元：范宽、赵孟頫、倪瓒 — 精品¥5000万~数亿</p>
+    <p>明四家：沈周、文徵明、仇英、董其昌 — ¥500万~1亿</p>
+    <p>四僧：八大山人、石涛、弘仁、髡残 — ¥1000万~2亿</p>
+    <p>四王：王时敏、王鉴、王翚、王原祁 — ¥100万~3000万</p>
+  </div>
+
+  <div class="entry">
+    <h4>近现代书画</h4>
+    <div class="meta-line"><code>ID: 3003</code> <span class="tag">张大千</span> <span class="tag">齐白石</span></div>
+    <div class="img-placeholder">张大千《桃源图》— 2016年香港苏富比以2.71亿港币成交</div>
+    <p>第一梯队（¥5000万~3亿）：张大千、齐白石、傅抱石、徐悲鸿、李可染</p>
+    <p>第二梯队（¥1000万~1亿）：黄宾虹、潘天寿、吴昌硕、林风眠</p>
+    <p>第三梯队（¥200万~3000万）：吴冠中、李苦禅、黄胄</p>
+  </div>
+
+  <div class="entry">
+    <h4>中国书法</h4>
+    <div class="meta-line"><code>ID: 3004</code></div>
+    <div class="img-placeholder">王羲之《快雪时晴帖》（唐摹本）— 台北故宫博物院藏</div>
+    <p>书法市场通常比绘画市场低3~5倍，顶级作品可达千万级（曾巩《局事帖》2.07亿元）。</p>
+    <p>"书法是最后的洼地"是行业内常见论点</p>
+  </div>
+
+  <div class="entry">
+    <h4>当代水墨与实验水墨</h4>
+    <div class="meta-line"><code>ID: 3005</code> <span class="tag">当代水墨</span></div>
+    <div class="img-placeholder">徐冰《天书》— 装置艺术，将水墨推向文化符号层面</div>
+    <p>徐冰、谷文达（¥50万~500万），新工笔（徐华翎、张见，¥10万~200万）</p>
+  </div>
+
+  <div class="section-title">3.2 现当代艺术（5条）</div>
+
+  <div class="entry">
+    <h4>现当代艺术市场总览</h4>
+    <div class="meta-line"><code>ID: 3010</code></div>
+    <div class="img-placeholder">达芬奇《救世主》— 2017年佳士得以$4.5亿美元成交，全球最贵艺术品纪录</div>
+    <p>现当代艺术占全球拍卖成交额<strong>45%~50%</strong>，价格天花板最高。</p>
+    <p>现代艺术（1880s~1960s）→ 战后艺术（1945~1970）→ 当代艺术（1970s~至今）</p>
+  </div>
+
+  <div class="entry">
+    <h4>西方现代艺术大师</h4>
+    <div class="meta-line"><code>ID: 3011</code></div>
+    <div class="img-placeholder">克劳德·莫奈《睡莲》系列 — 纽约现代艺术博物馆藏</div>
+    <p>S-tier（$8000万~$4.5亿）：毕加索、莫奈、梵高、达芬奇</p>
+    <p>A-tier（$3000万~$1.5亿）：沃霍尔、马蒂斯、罗斯科</p>
+    <p>毕加索全球拍卖总成交额最高的艺术家</p>
+  </div>
+
+  <div class="entry">
+    <h4>战后与当代艺术</h4>
+    <div class="meta-line"><code>ID: 3012</code></div>
+    <div class="img-placeholder">安迪·沃霍尔《金宝汤罐头》— 波普艺术标志性作品</div>
+    <p>年轻一代（1990s后）市场热度高但泡沫争议较大</p>
+  </div>
+
+  <div class="entry">
+    <h4>亚洲现当代艺术</h4>
+    <div class="meta-line"><code>ID: 3013</code></div>
+    <div class="img-placeholder">草间弥生《无限镜屋》— 沉浸式装置，标志性波点风格</div>
+    <p>日本：草间弥生、奈良美智、村上隆。韩国：金焕基、李禹焕。中国：赵无极（最高¥2.5亿）、朱德群</p>
+    <p>中国当代艺术代际：玩世/政治波普（'85新潮）→ F4+1（曾梵志、刘野等）→ 70/80后 → 90后</p>
+  </div>
+
+  <div class="entry">
+    <h4>版画与限量作品</h4>
+    <div class="meta-line"><code>ID: 3014</code></div>
+    <div class="img-placeholder">村上隆《太阳花》版画系列</div>
+    <p>版画是入门高端艺术的最佳通道。签名版价格翻2~5倍。</p>
+    <p>类型：丝网印刷（沃霍尔，$5000~$50万）、蚀刻（毕加索，$1000~$5万）、石版画、木刻</p>
+  </div>
+
+  <div class="section-title">3.3 瓷器杂项（4条）</div>
+
+  <div class="entry">
+    <h4>瓷器市场概览</h4>
+    <div class="meta-line"><code>ID: 3020</code></div>
+    <div class="img-placeholder">元·青花缠枝牡丹纹梅瓶 — 元青花极品，故宫博物院藏</div>
+    <p>瓷器是中国艺术品第二大品类（仅次于书画）。分类：按釉色（青花/粉彩/斗彩/珐琅彩/单色釉）、按窑口（汝官哥钧定）、按年代（高古→元明清→民国→当代）</p>
+  </div>
+
+  <div class="entry">
+    <h4>历代名瓷</h4>
+    <div class="meta-line"><code>ID: 3021</code></div>
+    <div class="img-placeholder">北宋·汝窑天青釉弦纹樽 — 故宫博物院藏，汝窑存世不足百件</div>
+    <div class="img-placeholder">清·乾隆珐琅彩锦鸡富贵图双耳瓶 — 2005年香港苏富比1.15亿成交</div>
+    <p>宋瓷（汝官哥钧定）：汝窑存世约87件，每件¥6000万+</p>
+    <p>明清官窑：永乐/宣德青花、成化斗彩（鸡缸杯¥3亿）、雍正粉彩/珐琅彩、乾隆彩瓷</p>
+  </div>
+
+  <div class="entry">
+    <h4>佛像与古董家具</h4>
+    <div class="meta-line"><code>ID: 3022</code></div>
+    <div class="img-placeholder">明·永乐铜鎏金释迦牟尼坐像</div>
+    <div class="img-placeholder">明·黄花梨圈椅 — 明式家具经典器型</div>
+    <p>藏传佛像 > 汉传佛像。黄花梨家具¥10万~5000万，紫檀¥20万~3000万</p>
+  </div>
+
+  <div class="entry">
+    <h4>玉器与翡翠</h4>
+    <div class="meta-line"><code>ID: 3023</code></div>
+    <div class="img-placeholder">清·乾隆玉雕山水人物山子</div>
+    <p>翡翠四大要素：种（玻璃种>冰种>糯种>豆种）、水（透明度）、色（浓阳正匀）、工（雕工）</p>
+  </div>
+
+  <div class="section-title">3.4 珠宝钟表（3条）</div>
+
+  <div class="entry">
+    <h4>珠宝拍卖市场</h4>
+    <div class="meta-line"><code>ID: 3030</code></div>
+    <div class="img-placeholder">格拉夫粉红钻 59.60ct — 2017年$7120万成交，创钻石单价纪录</div>
+    <p>五大贵重宝石：钻石（D色FL无瑕）、红宝石（鸽血红）、蓝宝石（矢车菊蓝/皇家蓝）、祖母绿（木佐绿）</p>
+  </div>
+
+  <div class="entry">
+    <h4>高级腕表</h4>
+    <div class="meta-line"><code>ID: 3031</code></div>
+    <div class="img-placeholder">百达翡丽Ref.1518全历月相计时腕表</div>
+    <p>三巨头：百达翡丽（$5万~$800万+）、劳力士（Daytona保罗纽曼$2000万+）、爱彼（皇家橡树）</p>
+  </div>
+
+  <div class="entry">
+    <h4>品牌珠宝</h4>
+    <div class="meta-line"><code>ID: 3032</code> <span class="tag">卡地亚</span> <span class="tag">梵克雅宝</span> <span class="tag">蒂芙尼</span> <span class="tag">宝格丽</span></div>
+    <div class="img-placeholder">卡地亚豹头系列古董珠宝</div>
+    <div class="img-placeholder">梵克雅宝四叶草系列</div>
+    <p>品牌珠宝鉴定要点：品牌钢印/标记、原装盒/证书、工艺细节</p>
+  </div>
+
+  <div class="section-title">3.5 名酒（3条）</div>
+
+  <div class="entry">
+    <h4>名酒拍卖市场</h4>
+    <div class="meta-line"><code>ID: 3040</code></div>
+    <div class="img-placeholder">罗曼尼康帝La Romanée-Conti特级园红酒 — 葡萄酒界的"法拉利"</div>
+    <p>两大核心板块：红酒（波尔多一级庄、勃艮第特级园）+ 威士忌（麦卡伦、山崎、轻井泽）</p>
+  </div>
+
+  <div class="entry">
+    <h4>顶级葡萄酒</h4>
+    <div class="meta-line"><code>ID: 3041</code></div>
+    <div class="img-placeholder">拉菲古堡Chateau Lafite Rothschild正牌红酒</div>
+    <p>1982年拉菲在中国市场的象征地位非同一般。勃艮第vs波尔多：勃艮第产量小（年产数百~数千箱），近10年价格暴涨（罗曼尼康帝涨超300%）</p>
+  </div>
+
+  <div class="entry">
+    <h4>珍稀威士忌</h4>
+    <div class="meta-line"><code>ID: 3042</code></div>
+    <div class="img-placeholder">麦卡伦Fine & Rare 1926年款 — 2019年£150万成交，全球最贵瓶装威士忌</div>
+    <p>五大投资级：麦卡伦（最高）、山崎（日威领头羊）、轻井泽（已停产，价格飞涨）、波特艾伦、云顶</p>
+  </div>
+
+  <div class="section-title">3.6 手袋与潮玩（3条）</div>
+
+  <div class="entry">
+    <h4>手袋拍卖市场</h4>
+    <div class="meta-line"><code>ID: 3050</code> <span class="tag">爱马仕</span> <span class="tag">Birkin</span></div>
+    <div class="img-placeholder">爱马仕Birkin 25 雾面鳄鱼皮喜马拉雅款 — 最贵手袋纪录保持者，$50万+</div>
+    <p>爱马仕Birkin/Kelly几乎独占这一市场。喜马拉雅鳄鱼皮$20万~$50万+，常规皮$1万~$5万</p>
+  </div>
+
+  <div class="entry">
+    <h4>潮流艺术与收藏玩具</h4>
+    <div class="meta-line"><code>ID: 3051</code> <span class="tag">Kaws</span> <span class="tag">Be@rbrick</span></div>
+    <div class="img-placeholder">Kaws《Companion Passing Through》— 8英尺雕塑，$100万+</div>
+    <p>2017年后爆发的品类，核心驱动力为80/90/00后新藏家。原创画作¥1万~500万，雕塑玩具¥500~50万</p>
+  </div>
+
+  <div class="section-title">3.7 古籍善本（2条）</div>
+
+  <div class="entry">
+    <h4>古籍善本</h4>
+    <div class="meta-line"><code>ID: 3060</code></div>
+    <div class="img-placeholder">宋刻本《史记》— "一页宋版一两黄金"</div>
+    <p>宋元刻本¥50万~5000万+，明刻本¥1万~300万，清乾隆前刻本¥5000~50万</p>
+  </div>
+
+  <div class="entry">
+    <h4>信札与手稿</h4>
+    <div class="meta-line"><code>ID: 3061</code></div>
+    <div class="img-placeholder">雨果《悲惨世界》手稿</div>
+    <p>历史伟人（毛泽东、林肯）¥10万~500万，文学巨匠（鲁迅、钱钟书）¥5万~200万</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-area4" class="section">
+  <div class="hero">
+    <h2>🔍 鉴定估价与来源</h2>
+    <div class="subtitle">模块4 · 子模块：鉴定方法论 · 科技鉴定 · 估价体系 · Provenance · 品相报告</div>
+    <div class="stats">
+      <div class="stat-card"><div class="num">12</div><div class="label">条目</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">4.1 鉴定方法论</div>
+
+  <div class="entry">
+    <h4>传统鉴定（眼学）四维</h4>
+    <div class="meta-line"><code>ID: 4001</code></div>
+    <p><strong>笔墨/笔触</strong> → <strong>款识/签名</strong> → <strong>材质</strong> → <strong>风格</strong></p>
+    <p>眼学局限性：严重依赖专家经验、主观性强、造假技术演进、团伙作案</p>
+  </div>
+
+  <div class="entry">
+    <h4>科技鉴定方法</h4>
+    <div class="meta-line"><code>ID: 4002</code></div>
+    <table>
+      <tr><th>技术</th><th>适用</th><th>特点</th></tr>
+      <tr><td>碳-14测年</td><td>纸/绢/木/骨</td><td>精度±50年</td></tr>
+      <tr><td>X射线荧光（XRF）</td><td>颜料/金属/陶瓷釉面</td><td>无损、快速</td></tr>
+      <tr><td>红外反射成像</td><td>素描底层/签名修改</td><td>发现底层构图</td></tr>
+      <tr><td>热释光测年（TL）</td><td>陶器/瓷器</td><td>需取样</td></tr>
+      <tr><td>拉曼光谱</td><td>颜料/矿物成分</td><td>无损、高特异</td></tr>
+    </table>
+    <p>现代鉴定 = 眼学（60%~70%）+ 科技（20%~30%）+ 来源考证（10%~20%）</p>
+  </div>
+
+  <div class="entry">
+    <h4>鉴定争议与法律后果</h4>
+    <div class="meta-line"><code>ID: 4003</code></div>
+    <p>拍卖后发现赝品 → 买家可主张撤销合同（《拍卖法》第61条）。拍卖行声明不保真情况下责任有限（故意隐瞒除外）</p>
+  </div>
+
+  <div class="section-title">4.2 估价体系</div>
+
+  <div class="entry">
+    <h4>估价方法论</h4>
+    <div class="meta-line"><code>ID: 4010</code></div>
+    <table>
+      <tr><th>方法</th><th>原理</th><th>适用场景</th></tr>
+      <tr><td>市场比较法</td><td>对比同类近期成交价</td><td>二级市场活跃的艺术家</td></tr>
+      <tr><td>成本法</td><td>材料+创作投入+回报</td><td>新兴艺术家</td></tr>
+      <tr><td>收益法</td><td>未来收益折现</td><td>艺术基金</td></tr>
+    </table>
+  </div>
+
+  <div class="entry">
+    <h4>品相报告（Condition Report）</h4>
+    <div class="meta-line"><code>ID: 4012</code></div>
+    <p>品相等级：全品（100%）→ 良好（80%~95%）→ 一般（50%~80%）→ 修复（30%~60%）→ 损毁（<30%）</p>
+  </div>
+
+  <div class="section-title">4.3 Provenance（来源）</div>
+
+  <div class="entry">
+    <h4>来源定义与价值</h4>
+    <div class="meta-line"><code>ID: 4020</code></div>
+    <p>Provenance 指艺术品的完整拥有/展示/出版历史记录。著名藏家递藏可带来 <strong>20%~50% 的溢价</strong>。</p>
+  </div>
+
+  <div class="entry">
+    <h4>来源调查与品类鉴定对照</h4>
+    <div class="meta-line"><code>ID: 4021-4030</code></div>
+    <p>工具：Artprice、Artnet、Getty Provenance Index、Chinese Painting Database</p>
+    <p>风险等级：中国书画 ⭐⭐⭐⭐⭐ 极高，瓷器 ⭐⭐⭐⭐ 高，珠宝 ⭐⭐ 中低</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-area5" class="section">
+  <div class="hero">
+    <h2>⚖️ 法律法规与合规</h2>
+    <div class="subtitle">模块5 · 子模块：国内核心法律 · 行政法规 · 国际公约 · 跨境合规 · 真伪纠纷 · 反洗钱</div>
+    <div class="stats">
+      <div class="stat-card"><div class="num">12</div><div class="label">条目</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">5.1 国内核心法律</div>
+
+  <div class="entry">
+    <h4>《中华人民共和国拍卖法》</h4>
+    <div class="meta-line"><code>ID: 5001</code></div>
+    <p><strong>第61条（最关键条款）</strong>：拍卖人未声明不保真的，对买受人承担瑕疵担保责任；声明不保真的，不承担瑕疵担保责任（故意隐瞒除外）</p>
+    <p>实践中买家打赢官司的案例极少（需证明拍卖行"故意隐瞒"）</p>
+  </div>
+
+  <div class="entry">
+    <h4>《文物保护法》</h4>
+    <div class="meta-line"><code>ID: 5002</code></div>
+    <p>禁止买卖：国有文物、非国有馆藏珍贵文物、出土文物、来源不合法文物</p>
+    <p>文物拍卖须取得<strong>文物拍卖许可证</strong>，标的逐件报送省文物局审核</p>
+  </div>
+
+  <div class="entry">
+    <h4>《艺术品经营管理办法》（文化部令第56号）</h4>
+    <div class="meta-line"><code>ID: 5003</code></div>
+    <p>经营备案 + 尽职调查（来源登记义务）+ 真实性责任 + 消费者7日退货权</p>
+  </div>
+
+  <div class="section-title">5.2 国际公约</div>
+
+  <div class="entry">
+    <h4>UNESCO 1970 & UNIDROIT 1995</h4>
+    <div class="meta-line"><code>ID: 5020-5021</code></div>
+    <p><strong>UNESCO 1970</strong>：禁止非法进出口文化财产。中国已加入，但不溯及既往。</p>
+    <p><strong>UNIDROIT 1995</strong>：被盗物必须归还，善意买受人可获合理补偿。中国尚未加入。</p>
+  </div>
+
+  <div class="section-title">5.3 跨境与纠纷</div>
+
+  <div class="entry">
+    <h4>艺术品进出口实务 & 真伪纠纷</h4>
+    <div class="meta-line"><code>ID: 5030-5041</code></div>
+    <p><strong>进口税费</strong>：关税6%~12% + 增值税13% + 消费税0%</p>
+    <p><strong>CITES公约</strong>：象牙、犀角、虎骨、檀香紫檀等受管制</p>
+    <p><strong>香港优势</strong>：零关税、零增值税 → 全球艺术品交易中心</p>
+  </div>
+
+  <div class="entry">
+    <h4>反洗钱合规</h4>
+    <div class="meta-line"><code>ID: 5050</code></div>
+    <p>艺术品交易反洗钱义务：客户尽职调查（CDD）+ 大额交易报告 + 可疑交易报告 + 记录保存≥5年 + KYC</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-area6" class="section">
+  <div class="hero">
+    <h2>💎 艺术商业与金融</h2>
+    <div class="subtitle">模块6 · 子模块：艺术基金 · 质押融资 · 保险 · 捐赠税务 · 信托 · 自由港</div>
+    <div class="stats">
+      <div class="stat-card"><div class="num">9</div><div class="label">条目</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">6.1 艺术基金</div>
+
+  <div class="entry">
+    <h4>艺术基金模式</h4>
+    <div class="meta-line"><code>ID: 6001</code></div>
+    <p>目标年化收益8%~15%。标杆案例：<strong>British Rail Pension Fund</strong>（1974~1980投入£4000万，年化11.3%）</p>
+  </div>
+
+  <div class="entry">
+    <h4>艺术品作为投资标的</h4>
+    <div class="meta-line"><code>ID: 6002</code></div>
+    <p>长期年化5%~10%，交易成本极高（佣金20%+），流动性极低。适合作为资产组合的<strong>另类配置（5%~15%）</strong></p>
+  </div>
+
+  <div class="section-title">6.2 质押融资</div>
+
+  <div class="entry">
+    <h4>Art Loan</h4>
+    <div class="meta-line"><code>ID: 6010</code></div>
+    <p>银行：估值40%~50%，利率LIBOR+2%~4%。拍卖行预付：50%~60%，利率6%~12%。专业机构：40%~70%，8%~18%</p>
+  </div>
+
+  <div class="section-title">6.3 保险</div>
+
+  <div class="entry">
+    <h4>艺术品保险</h4>
+    <div class="meta-line"><code>ID: 6020-6021</code></div>
+    <p>展览/运输保险（0.1%~0.5%/件），永久收藏保险（0.2%~0.5%/年）</p>
+    <p>理赔最频繁：运输途中损坏。不理赔：固有缺陷、不当存储、虫蛀/霉菌</p>
+  </div>
+
+  <div class="section-title">6.4 税务与捐赠</div>
+
+  <div class="entry">
+    <h4>捐赠与税务筹划</h4>
+    <div class="meta-line"><code>ID: 6030-6031</code></div>
+    <p>捐赠给公益性博物馆可享受<strong>个人所得税/企业所得税抵免</strong>（个税30%，企业12%）</p>
+    <p><strong>自由港</strong>（日内瓦/卢森堡/新加坡/上海）：艺术品存放可延期缴税，在港内交易无需缴纳进口关税和增值税</p>
+  </div>
+
+  <div class="entry">
+    <h4>艺术信托</h4>
+    <div class="meta-line"><code>ID: 6040</code></div>
+    <p>功能：资产隔离、税务规划、传承控制、多代继承、专业管理。建议资产¥500万+考虑</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-area7" class="section">
+  <div class="hero">
+    <h2>📊 市场数据与趋势</h2>
+    <div class="subtitle">模块7 · 子模块：全球市场数据 · 价格指数 · 品类分占 · 藏家数据 · 新兴趋势</div>
+    <div class="stats">
+      <div class="stat-card"><div class="num">8</div><div class="label">条目</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">7.1 全球市场</div>
+
+  <div class="entry">
+    <h4>全球艺术市场规模</h4>
+    <div class="meta-line"><code>ID: 7001</code></div>
+    <p>全球拍卖总成交额~$280亿（2024），全球艺术市场总成交额~$700亿</p>
+    <p><strong>关键洞察</strong>：金字塔尖1%的拍品占据了55%以上的成交额</p>
+  </div>
+
+  <div class="entry">
+    <h4>市场份额</h4>
+    <div class="meta-line"><code>ID: 7002</code></div>
+    <p>佳士得~32% / 苏富比~28% / 富艺斯~6% / 嘉德~5% / 保利~5%</p>
+  </div>
+
+  <div class="section-title">7.2 价格指数</div>
+
+  <div class="entry">
+    <h4>梅摩指数与中国指数</h4>
+    <div class="meta-line"><code>ID: 7010-7011</code></div>
+    <p><strong>梅摩指数</strong>（Mei Moses）：最权威的艺术品价格指数，重复销售法，1950年至今</p>
+    <p>长期年化回报5.5%~8.5%，低于S&P500但波动更低</p>
+    <p><strong>中国指数</strong>：雅昌指数（AMMA）、中国书画400指数、胡润艺术榜</p>
+  </div>
+
+  <div class="section-title">7.3 品类占比</div>
+
+  <div class="entry">
+    <h4>按品类市场占比</h4>
+    <div class="meta-line"><code>ID: 7020</code></div>
+    <table>
+      <tr><th>品类</th><th>全球占比</th><th>中国占比</th></tr>
+      <tr><td>现当代艺术</td><td>~45%</td><td>~20%</td></tr>
+      <tr><td>中国书画</td><td>~5%</td><td><strong>~55%</strong></td></tr>
+      <tr><td>珠宝钟表</td><td>~15%</td><td>~8%</td></tr>
+      <tr><td>瓷器杂项</td><td>~8%</td><td>~15%</td></tr>
+      <tr><td>名酒</td><td>~8%</td><td>~3%</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">7.4 新藏家</div>
+
+  <div class="entry">
+    <h4>新藏家画像</h4>
+    <div class="meta-line"><code>ID: 7030</code></div>
+    <p>新买家平均年龄<strong>38岁</strong>（2019年为45岁），千禧一代占成交额<strong>45%</strong></p>
+    <p>线上交易参与的买家比例67%，女性买家占比51%（中国近60%）</p>
+  </div>
+
+  <div class="section-title">7.5 新兴趋势</div>
+
+  <div class="entry">
+    <h4>线上化 & ESG & 新兴市场</h4>
+    <div class="meta-line"><code>ID: 7040-7041</code></div>
+    <p><strong>线上拍卖</strong>：从线下→在线同步→纯线上→数字化体验（VR预展、AI品相报告、直播拍卖）</p>
+    <p><strong>女性艺术家</strong>：成交额占比从~5%提升至~15%（草间弥生为全球最高年成交额女艺术家）</p>
+    <p><strong>新兴区域</strong>：中东（阿布扎比/利雅得）、东南亚（新加坡）、印度、非洲</p>
+  </div>
+</section>
+
+<div class="footer">
+  艺术拍卖与咨询知识体系 v1.0 · 更新于 2026-06-01 · 共88条知识条目
+</div>
+
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  event.target.closest('a').classList.add('active');
+}
+</script>
+
+</body>
+</html>
