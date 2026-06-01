@@ -110,6 +110,18 @@
     text-align: center;
   }
   .entry .img-placeholder::before { content: "🖼 "; }
+  .entry .art-img {
+    margin: 12px 0; border-radius: 8px; overflow: hidden;
+    background: #faf8f5; text-align: center; padding: 8px; cursor: pointer;
+    border: 1px solid var(--border);
+  }
+  .entry .art-img img {
+    max-width: 100%; max-height: 300px; border-radius: 4px;
+    object-fit: contain;
+  }
+  .entry .art-img figcaption {
+    font-size: 12px; color: var(--text-light); margin-top: 6px;
+  }
   .entry .ref {
     border-top: 1px solid var(--border); margin-top: 12px; padding-top: 8px;
     font-size: 13px; color: var(--accent);
@@ -452,14 +464,20 @@ personal-knowledge-base/
     <h4>品类概述</h4>
     <div class="meta-line"><code>ID: 3001</code> <span class="tag">书画</span> <span class="tag">山水</span> <span class="tag">花鸟</span></div>
     <p>中国书画占国内拍卖市场成交额的<strong>50%~60%</strong>，是中国市场绝对主力。</p>
-    <div class="img-placeholder">五代·董源《潇湘图》卷（局部）— 故宫博物院藏</div>
+    <div class="art-img">
+      <img src="https://images.metmuseum.org/CRDImages/as/original/DP267536.jpg" alt="中国书画作品" loading="lazy">
+      <figcaption>中国画 · 故宫博物院/大都会博物馆藏（公有领域）</figcaption>
+    </div>
     <p>分类：山水/花鸟/人物（题材）；工笔/写意/没骨（技法）；立轴/手卷/册页/扇面（装裱）；古代/近现代/当代（时代）</p>
   </div>
 
   <div class="entry">
     <h4>古代书画</h4>
     <div class="meta-line"><code>ID: 3002</code> <span class="tag">宋元</span> <span class="tag">明清</span></div>
-    <div class="img-placeholder">宋·赵孟頫《鹊华秋色图》— 台北故宫博物院藏</div>
+    <div class="art-img">
+      <img src="https://images.metmuseum.org/CRDImages/as/original/DP276881.jpg" alt="中国古代山水画" loading="lazy">
+      <figcaption>中国古代山水 · 大都会博物馆藏（CC0 公有领域）</figcaption>
+    </div>
     <p>宋元：范宽、赵孟頫、倪瓒 — 精品¥5000万~数亿</p>
     <p>明四家：沈周、文徵明、仇英、董其昌 — ¥500万~1亿</p>
     <p>四僧：八大山人、石涛、弘仁、髡残 — ¥1000万~2亿</p>
@@ -469,7 +487,10 @@ personal-knowledge-base/
   <div class="entry">
     <h4>近现代书画</h4>
     <div class="meta-line"><code>ID: 3003</code> <span class="tag">张大千</span> <span class="tag">齐白石</span></div>
-    <div class="img-placeholder">张大千《桃源图》— 2016年香港苏富比以2.71亿港币成交</div>
+    <div class="art-img">
+      <img src="https://images.metmuseum.org/CRDImages/as/original/DP217409.jpg" alt="中国书画作品" loading="lazy">
+      <figcaption>中国人物画 · 大都会博物馆藏（CC0 公有领域）</figcaption>
+    </div>
     <p>第一梯队（¥5000万~3亿）：张大千、齐白石、傅抱石、徐悲鸿、李可染</p>
     <p>第二梯队（¥1000万~1亿）：黄宾虹、潘天寿、吴昌硕、林风眠</p>
     <p>第三梯队（¥200万~3000万）：吴冠中、李苦禅、黄胄</p>
@@ -495,7 +516,10 @@ personal-knowledge-base/
   <div class="entry">
     <h4>现当代艺术市场总览</h4>
     <div class="meta-line"><code>ID: 3010</code></div>
-    <div class="img-placeholder">达芬奇《救世主》— 2017年佳士得以$4.5亿美元成交，全球最贵艺术品纪录</div>
+    <div class="art-img">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/800px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg" alt="达芬奇作品" loading="lazy">
+      <figcaption>达芬奇《蒙娜丽莎》· 卢浮宫藏（公有领域）</figcaption>
+    </div>
     <p>现当代艺术占全球拍卖成交额<strong>45%~50%</strong>，价格天花板最高。</p>
     <p>现代艺术（1880s~1960s）→ 战后艺术（1945~1970）→ 当代艺术（1970s~至今）</p>
   </div>
@@ -503,7 +527,10 @@ personal-knowledge-base/
   <div class="entry">
     <h4>西方现代艺术大师</h4>
     <div class="meta-line"><code>ID: 3011</code></div>
-    <div class="img-placeholder">克劳德·莫奈《睡莲》系列 — 纽约现代艺术博物馆藏</div>
+    <div class="art-img">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/800px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg" alt="梵高星空" loading="lazy">
+      <figcaption>梵高《星月夜》· MoMA藏（公有领域）</figcaption>
+    </div>
     <p>S-tier（$8000万~$4.5亿）：毕加索、莫奈、梵高、达芬奇</p>
     <p>A-tier（$3000万~$1.5亿）：沃霍尔、马蒂斯、罗斯科</p>
     <p>毕加索全球拍卖总成交额最高的艺术家</p>
@@ -537,15 +564,20 @@ personal-knowledge-base/
   <div class="entry">
     <h4>瓷器市场概览</h4>
     <div class="meta-line"><code>ID: 3020</code></div>
-    <div class="img-placeholder">元·青花缠枝牡丹纹梅瓶 — 元青花极品，故宫博物院藏</div>
+    <div class="art-img">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Flask_Yongle_Guimet_G4761.jpg/640px-Flask_Yongle_Guimet_G4761.jpg" alt="永乐青花扁瓶" loading="lazy">
+      <figcaption>明永乐·青花扁瓶 · 吉美博物馆藏（公有领域）</figcaption>
+    </div>
     <p>瓷器是中国艺术品第二大品类（仅次于书画）。分类：按釉色（青花/粉彩/斗彩/珐琅彩/单色釉）、按窑口（汝官哥钧定）、按年代（高古→元明清→民国→当代）</p>
   </div>
 
   <div class="entry">
     <h4>历代名瓷</h4>
     <div class="meta-line"><code>ID: 3021</code></div>
-    <div class="img-placeholder">北宋·汝窑天青釉弦纹樽 — 故宫博物院藏，汝窑存世不足百件</div>
-    <div class="img-placeholder">清·乾隆珐琅彩锦鸡富贵图双耳瓶 — 2005年香港苏富比1.15亿成交</div>
+    <div class="art-img">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/MET_DP-14156-002.jpg/640px-MET_DP-14156-002.jpg" alt="明代青花瓷" loading="lazy">
+      <figcaption>明·青花瓷 · 大都会博物馆藏（CC0 公有领域）</figcaption>
+    </div>
     <p>宋瓷（汝官哥钧定）：汝窑存世约87件，每件¥6000万+</p>
     <p>明清官窑：永乐/宣德青花、成化斗彩（鸡缸杯¥3亿）、雍正粉彩/珐琅彩、乾隆彩瓷</p>
   </div>
@@ -584,8 +616,10 @@ personal-knowledge-base/
   <div class="entry">
     <h4>品牌珠宝</h4>
     <div class="meta-line"><code>ID: 3032</code> <span class="tag">卡地亚</span> <span class="tag">梵克雅宝</span> <span class="tag">蒂芙尼</span> <span class="tag">宝格丽</span></div>
-    <div class="img-placeholder">卡地亚豹头系列古董珠宝</div>
-    <div class="img-placeholder">梵克雅宝四叶草系列</div>
+    <div class="art-img">
+      <img src="https://images.metmuseum.org/CRDImages/ci/original/DP375156.jpg" alt="古董珠宝" loading="lazy">
+      <figcaption>欧洲古董珠宝 · 大都会博物馆藏（CC0 公有领域）</figcaption>
+    </div>
     <p>品牌珠宝鉴定要点：品牌钢印/标记、原装盒/证书、工艺细节</p>
   </div>
 
